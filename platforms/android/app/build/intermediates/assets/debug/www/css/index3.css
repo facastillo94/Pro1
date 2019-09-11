@@ -1,0 +1,58 @@
+div.rect_class {
+    width: 86%;
+    height: 88%;
+
+    /* Make inner part of rectangle transparent */
+    background-image: url(../img/volteo.png);
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: 100% 100%;
+    /* Center vertically AND horizontally */
+    /* position attribute can be fixed too*/
+    position:absolute;
+	top: 0; left: 0;
+    /*top: 0; bottom: 0;*/
+    margin: auto;
+
+    /* This to solve "the content will not be cut when the window is smaller than the content": */
+    max-width: 95%;
+    max-height: 82%;
+    overflow: auto;
+
+    /* COOL BORDER */
+    border-width: 20px;
+    border-style: solid;
+    /* You need to place border.png into img folder */
+    border-image: url(../img/border.png) 50 round;
+
+    /* SHADOW EFFECT darkens everything outside rectangle */
+    box-shadow: 0 0 500px 5000px rgba(0, 0, 0, 0.4);
+}
+
+img.btn_class {
+    width: 75px;
+    height: 75px;
+
+    /* Center horizontally */
+    /* position attribute can be fixed too*/
+    position: absolute;
+    margin: auto;
+}
+img.btn_class_flash {
+    width: 70px;
+    height: 70px;
+
+    /* Center horizontally */
+    /* position attribute can be fixed too*/
+    position: absolute;
+    margin: auto;
+}
+img.flash_class {
+    bottom: 20px;
+    left: 15%;
+}
+
+img.take_pic_class {
+    bottom: 20px;
+    left: 0px; right: 0px;
+}

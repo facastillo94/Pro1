@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+	  <title>Validacion de usuarios</title>
+	  <link rel="stylesheet" href="jquery.mobile-1.3.1.min.css" />
+	  <script src="jquery-1.9.1.min.js"></script>
+	  <script src="jquery.mobile-1.3.1.min.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet" type="text/css">
+	<link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	<link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="css/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
+	<link href="css/bootstrap-social.css" rel="stylesheet" type="text/css">	
+	<link href="css/templatemo_style.css" rel="stylesheet" type="text/css">	
+    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+    <script type="text/javascript" charset="utf-8">
+
+    var pictureSource;   // picture source
+    var destinationType; // sets the format of returned value
+	var ruta = "http://192.168.1.116/Zeus";
+	//DESHABILITAR BOTON DE RETROCESO
+	onLoad();
+	function onLoad() {
+		document.addEventListener("deviceready", onDeviceReady, false);
+	}
+
+	// device APIs are available
+	//
+	function onDeviceReady() {
+		// Register the event listener
+		document.addEventListener("backbutton", onBackKeyDown, false);
+	}
+
+	// Handle the back button
+	//
+	function onBackKeyDown() {
+	}
+	//*******************************
+	
+	//FUNCIONES WEBSERIVE -->
+	function btcontinuar(){
+		var xmlhttp; 
+		var nombredeusuario = document.getElementById("nombredeusuario").value;
+		var clave = document.getElementById("clave").value;
+		if(nombredeusuario == "" || clave == ""){
+			document.getElementById("yaexiste").innerHTML='<font color="#42CF84"><b>Ingresa Tus Datos</b></font>';
+			return;
+		}
+		document.getElementById("yaexiste").innerHTML='<font color="#42CF84"><b>Espera Un Momento....</b></font>';
+		if(nombredeusuario === "mwc" && clave === "modelosmwc"){
+			document.getElementById("yaexiste").innerHTML="";
+			document.getElementById("iduser").value='1';
+			window.localStorage.setItem("iduser", '1');
+			location.href="#subirarchivos";
+		}else{
+			document.getElementById("yaexiste").innerHTML='<font color="#571A04"><b>Error: Verifica Tu Usuario Y Contraseña</b></font>';
+			alert("Error: Verifica Tu Usuario Y Contraseña");
+			return;
+		}
+		/*if (window.XMLHttpRequest)
+		{// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp=new XMLHttpRequest();
+		}
+		else
+		{// code for IE6, IE5
+			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlhttp.open("GET",ruta + "/webservice.php?opc=1&nombredeusuario=" + nombredeusuario + "&clave=" + clave,true);
+		xmlhttp.onreadystatechange=function()
+		{
+			if (xmlhttp.readyState==4 && xmlhttp.status==200)
+			{
+				if(xmlhttp.responseText == 'Error'){
+					document.getElementById("yaexiste").innerHTML='<font color="#571A04"><b>Error: Verifica Tu Usuario Y Contraseña</b></font>';
+					alert("Error: Verifica Tu Usuario Y Contraseña");
+				}else{
+					document.getElementById("yaexiste").innerHTML="";
+					document.getElementById("iduser").value=xmlhttp.responseText;
+					window.localStorage.setItem("iduser", xmlhttp.responseText);
+					location.href="#subirarchivos";
+					
+				}
+			}
+		}
+		xmlhttp.send();*/
+	}
+	function centra(){ 
+		var top=(document.body.clientHeight-70)+"px"; 
+		var left=((document.body.clientWidth/2)-document.getElementById("abajo").style.width)+"px"; 
+		document.getElementById("abajo").style.top=top; 
+		document.getElementById("abajo").style.left=left; 
+		document.getElementById("abajo1").style.top=top; 
+		document.getElementById("abajo1").style.left=left; 
+		document.getElementById("abajo2").style.top=top; 
+		document.getElementById("abajo2").style.left=left; 
+		document.getElementById("abajo3").style.top=top; 
+		document.getElementById("abajo3").style.left=left; 
+	} 
+	function getParameterByName(name) {
+		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+		var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+		results = regex.exec(location.search);
+		return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+	}
+	function enviarservidor(){
+		var xmlhttp;
+		var nombremodelo = document.getElementById("nombremodelo").value;
+		var ncedula = document.getElementById("ncedula").value;
+		var iduser = document.getElementById("iduser").value;
+		var imgfrontal = document.getElementById("imgfrontal");
+		var imgfrontal2 = document.getElementById("imgfrontal2");
+		var imgfrontal3 = document.getElementById("imgfrontal3");
+		if(nombremodelo == "" || ncedula == ""){
+			alert("Ingresa Los Datos Del Nombre Y La Cedula");
+			location.href="#subirarchivos";
+			document.getElementById("nombremodelo").focus();
+			return;
+		}
+		if(window.localStorage.getItem("imgfrontal") == 'null' || window.localStorage.getItem("imgfrontal2") == 'null' || window.localStorage.getItem("imgfrontal3") == 'null'){//if(imgfrontal.value == '' || imgfrontal2.value == '' || imgfrontal3.value == ''){
+			alert("Ingresa Todas Las Fotos");
+			location.href="#subirarchivos";
+			return;
+		}else{
+			document.getElementById("subirdole").innerHTML='<font color="#42CF84"><b>Subiendo Archivos, Espera ....</b></font>';
+			document.getElementById("imgfrontal").value = window.localStorage.getItem("imgfrontal");
+			document.getElementById("imgfrontal2").value = window.localStorage.getItem("imgfrontal2");
+			document.getElementById("imgfrontal3").value = window.localStorage.getItem("imgfrontal3");
+			document.getElementById("botondeenvio").disabled = true;
+			var url = ruta + "/webservice.php";
+			$.ajax({                        
+			    type: "POST",                 
+			    url: url,                     
+			    data: $("#miForm").serialize(), 
+			    success: function(data)             
+			    {
+					alert("Todas las fotos subidas con exito");
+					document.getElementById("contador").value = 0;
+					document.getElementById("subirdole").innerHTML='';
+					document.getElementById("nombredeusuario").value='';
+					document.getElementById("clave").value='';
+					document.getElementById("nombremodelo").value='';
+					document.getElementById("ncedula").value='';
+					document.getElementById("iduser").value='';
+					document.getElementById('01').style.display = 'block';
+					document.getElementById('02').style.display = 'block';
+					document.getElementById('03').style.display = 'block';
+					location.href="index.html";
+					window.localStorage.removeItem("imgfrontal");
+					window.localStorage.removeItem("imgfrontal2");
+					window.localStorage.removeItem("imgfrontal3");
+					window.localStorage.removeItem("iduser");
+			    }
+			});
+			document.getElementById("botondeenvio").disabled = false;
+		}
+		
+	}
+	function mostrardivscamara(){
+		var nombremodelo = document.getElementById("nombremodelo").value;
+		var ncedula = document.getElementById("ncedula").value;
+		if(nombremodelo != '' && ncedula != ''){
+			document.getElementById('mostrarsolosidatos').style.display = 'block';
+		}else{
+			document.getElementById('mostrarsolosidatos').style.display = 'none';
+		}
+	}
+    function capturePhotoEdit(opcion) {
+		if(document.getElementById("nombremodelo").value == '' || document.getElementById("ncedula").value == ''){
+			alert('Ingresa Primero Tus Datos de Nombre y Cedula');
+			location.href='#subirarchivos';
+			document.getElementById("nombremodelo").focus();
+		}else{
+			if(opcion == '1' || opcion == 1){
+				miForm.method="GET";
+				miForm.action="tomaruno.html";
+				miForm.submit();
+			}
+			if(opcion == '2' || opcion == 2){
+				miForm.method="GET";
+				miForm.action="tomardos.html";
+				miForm.submit();
+			}
+			if(opcion == '3' || opcion == 3){
+				miForm.method="GET";
+				miForm.action="tomartres.html";
+				miForm.submit();
+			}
+		}
+    }
+    </script>
+	<style>
+		#nombremodelo::-webkit-input-placeholder {
+		  color: white;
+		}
+		#nombremodelo::-moz-placeholder {
+		  color: white;
+		}
+		#nombremodelo:-ms-input-placeholder {
+		  color: white;
+		}
+		#nombremodelo:-moz-placeholder {
+		  color: white;
+		}
+		#ncedula::-webkit-input-placeholder {
+		  color: white;
+		}
+		#ncedula::-moz-placeholder {
+		  color: white;
+		}
+		#ncedula:-ms-input-placeholder {
+		  color: white;
+		}
+		#ncedula:-moz-placeholder {
+		  color: white;
+		}
+	</style>
+  </head>
+  <body class="templatemo-bg-image-1" onload="centra()">
+	<div data-role="page" data-theme="b" style="background: #AFF654;background: transparent url(img/1.jpeg);background-position: center center; background-repeat: no-repeat; background-attachment: fixed; background-size: 100% 100%;" id="p1" data-add-back-btn="true">
+		<div id="abajo" style="position:absolute;background: transparent;width: 100%;"> 
+			<center>
+				<table style="width: 90%;height:70px;background: transparent; position:relative;">
+					<tr>
+						<td align="left">
+							<a href="#inicio"><button class="btn btn-warning" style="background: transparent;" data-role="none"><b>SALTAR</b></button></a>
+						</td>
+						<td align="right">
+							<a href="#p2"><button class="btn btn-warning" style="background: transparent;" data-role="none"><b>SIGUIENTE</b></button></a>
+						</td>
+					</tr>
+				</table>
+			</center>
+		</div>
+	</div>
+	<div data-role="page" data-theme="b" style="background: #AFF654;background: transparent url(img/2.jpeg);background-position: center center; background-repeat: no-repeat; background-attachment: fixed; background-size: 100% 100%;" id="p2" data-add-back-btn="true">
+		<div id="abajo1" style="position:absolute;background: transparent;width: 100%;">
+			<center>
+				<table style="width: 90%;height:70px;background: transparent; position:relative;">
+					<tr>
+						<td align="left">
+							<a href="#inicio"><button class="btn btn-warning" style="background: transparent;" data-role="none"><b>SALTAR</b></button></a>
+						</td>
+						<td align="right">
+							<a href="#p3"><button class="btn btn-warning" style="background: transparent;" data-role="none"><b>SIGUIENTE</b></button></a>
+						</td>
+					</tr>
+				</table>
+			</center>
+		</div>
+	</div>
+	<div data-role="page" data-theme="b" style="background: #AFF654;background: transparent url(img/3.jpeg);background-position: center center; background-repeat: no-repeat; background-attachment: fixed; background-size: 100% 100%;" id="p3" data-add-back-btn="true">
+		<div id="abajo2" style="position:absolute;background: transparent;width: 100%;">
+			<center>
+				<table style="width: 90%;height:70px;background: transparent; position:relative;">
+					<tr>
+						<td align="left">
+							<a href="#inicio"><button class="btn btn-warning" style="background: transparent;" data-role="none"><b>SALTAR</b></button></a>
+						</td>
+						<td align="right">
+							<a href="#p4"><button class="btn btn-warning" style="background: transparent;" data-role="none"><b>SIGUIENTE</b></button></a>
+						</td>
+					</tr>
+				</table>
+			</center>
+		</div>
+	</div>
+	<div data-role="page" data-theme="b" style="background: #AFF654;background: transparent url(img/4.jpeg);background-position: center center; background-repeat: no-repeat; background-attachment: fixed; background-size: 100% 100%;" id="p4" data-add-back-btn="true">
+		<div id="abajo3" style="position:absolute;background: transparent;width: 100%;">
+			<center>
+				<table style="width: 90%;height:70px;background: transparent; position:relative;">
+					<tr>
+						<td align="left">
+							
+						</td>
+						<td align="right">
+							<a href="#inicio"><button class="btn btn-warning" style="background: transparent;" data-role="none"><b>SIGUIENTE</b></button></a>
+						</td>
+					</tr>
+				</table>
+			</center>
+		</div>
+	</div>
+	<div data-role="page" id="inicio" style="background: transparent url(img/templatemo-bg-1.jpg);background-position: center center; background-repeat: no-repeat; background-attachment: fixed; background-size: 100% 100%;" data-role="none">
+		<!--<div data-role="header" >
+			<h1>Autenticacion de Usuario</h1>
+		</div>-->
+		<div class="col-md-12">
+			<div class="container">
+			<div data-role="content" class="form-horizontal templatemo-login-form-2" role="form" data-role="none">
+				
+				<div class="row">
+					<div class="col-md-12">
+						<!--<h1><font color="white">Login Form Two</font></h1>-->
+						<br>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="templatemo-one-signin col-md-12">
+						<div class="form-group">
+						  <div class="col-md-12">		          	
+							<label for="nombredeusuario" class="control-label" data-role="none"><p>Username</p></label>
+							<div class="templatemo-input-icon-container">
+								<i class="fa fa-user"></i>
+								<input type="text" class="form-control" id="nombredeusuario" name="nombredeusuario" data-role="none" placeholder="">
+							</div>		            		            		            
+						  </div>              
+						</div>
+						<div class="form-group">
+						  <div class="col-md-12">
+							<label for="clave" class="control-label" data-role="none" >Password</label>
+							<div class="templatemo-input-icon-container">
+								<i class="fa fa-lock"></i>
+								<input type="password" class="form-control" id="clave" name="clave" data-role="none" placeholder="">
+							</div>
+						  </div>
+						</div>
+						<div class="form-group">
+						  <div class="col-md-12">
+							<center><div id="yaexiste"></div><br></center>
+							<button class="btn btn-warning" onclick="btcontinuar()" data-role="none">LOG IN</button>
+						  </div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-12">
+								<a href="forgot-password.html" class="text-center" data-role="none">Cannot login?</a>
+							</div>
+						</div>
+					</div>
+				</div>	
+				
+				<!--
+				
+				
+				
+				<label for="nombredeusuario"> <font color="white"><b>Usuario</b></font> </label>
+				<input type="text" id="nombredeusuario" name="nombredeusuario" style="background: transparent;" data-role="none"> 
+
+				<label for="password"> <font color="white"><b>Contraseña</b></font> </label>
+				<input type="password" id="clave" name="clave"><br>
+				<center><div id="yaexiste"></div><br></center>
+				<a onclick="btcontinuar()"><button>Iniciar Sesi&oacute;n</button></a>-->
+			</div>
+			</div>
+		</div>
+	</div>
+	<div data-role="page" id="subirarchivos" style="background: transparent url(img/templatemo-bg-1.jpg);background-position: center center; background-repeat: no-repeat; background-attachment: fixed; background-size: 100% 100%;">
+
+		<!--<div data-role="header">
+			<h1>Subir</h1>
+		</div>-->
+		<div class="col-md-12">
+			<div class="container">
+				<div data-role="content" class="form-horizontal templatemo-login-form-2" role="form">
+					<form id="miForm" enctype='multipart/form-data' onSubmit="return valideformu()">
+						<div class="row">
+							<div class="col-md-12">
+								<center>
+									<table width="230px;" height="230px;" valign="center">
+										<tr>
+											<td align="center"><br><br><img src="img/LOGOMENOSPESO.png" style="width: 200px; height: 200px;"><br><br></td>
+										</tr>
+									</table>
+								</center>
+							</div>
+						</div>
+						<div class="form-group">
+						  <div class="col-md-12">
+							<div class="templatemo-input-icon-container">
+								<i class="fa fa-user"></i>
+								<input type="text" class="form-control" id="nombremodelo" name="nombremodelo" data-role="none" placeholder="Nombre" onkeyup="mostrardivscamara()">
+							</div>		            		            		            
+						  </div>              
+						</div>
+						<div class="form-group">
+						  <div class="col-md-12">
+							<div class="templatemo-input-icon-container">
+								<i class="fa fa-user"></i>
+								<input type="number" class="form-control" id="ncedula" name="ncedula" data-role="none" placeholder="Cedula" onkeyup="mostrardivscamara()">
+							</div>		            		            		            
+						  </div>              
+						</div>
+						<div id="mostrarsolosidatos" style="display: none;">
+							<div id="01">
+								<button style="background-color: transparent; border:0;outline:0 none;" onclick="capturePhotoEdit('1');" data-role="none"><img src="img/ccfente.png" id="imagen01" style="width: 230px;"></button><!-- width: 100%; height: 150px;-->
+							</div>
+							<div id="01-1" style="display: none;">
+								<center><img src="img/ccfente.png" id="imagen01-1" data-role="none" style="width: 230px;"></center>
+							</div><br>
+							<div id="02">
+								<button style="background-color: transparent; border:0;outline:0 none;" onclick="capturePhotoEdit('2');" data-role="none"><img src="img/ccposterior.png" id="imagen02" style="width: 230px;"></button>
+							</div>
+							<div id="02-1" style="display: none;">
+								<center><img src="img/ccposterior.png" id="imagen02-1" data-role="none" style="width: 230px;"></center>
+							</div><br>
+							<div id="03">
+								<button style="background-color: transparent; border:0;outline:0 none;" onclick="capturePhotoEdit('3');" data-role="none"><img src="img/ccwithmodelo.png" id="imagen03" style="width: 230px;"></button><br>
+							</div>
+							<div id="03-1" style="display: none;">
+								<center><img src="img/ccwithmodelo.png" id="imagen03-1" data-role="none" style="width: 230px;"></center>
+							</div><br>
+							<input type="hidden" name="iduser" id="iduser">
+							<input type="hidden" name="contador" id="contador" value="0">
+							<input type="hidden" name="imgfrontal" id="imgfrontal">
+							<input type="hidden" name="imgfrontal2" id="imgfrontal2">
+							<input type="hidden" name="imgfrontal3" id="imgfrontal3">
+							<input type="hidden" name="opc" id="opc" value="3">
+							<center><div id="subirdole"></div></center><br>
+							<button class="btn btn-warning" style="width: 230px;" id="botondeenvio" onclick="enviarservidor()" data-role="none">SUBIR AL SERVIDOR</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		 </div>
+	</div>
+    <!--<button onclick="capturePhoto();">Capture Photo</button> <br>
+    <button onclick="capturePhotoEdit();">Capture Editable Photo</button> <br>
+    <button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button><br>
+    <button onclick="getPhoto(pictureSource.SAVEDPHOTOALBUM);">From Photo Album</button><br>
+    <img style="display:none;width:60px;height:60px;" id="smallImage" src="" />
+    <img style="display:none;" id="largeImage" src="" />-->
+  </body>
+  <script>
+	/*if(getParameterByName('iduser') != ''){
+		document.getElementById('iduser').value = getParameterByName('iduser');
+		location.href='#subirarchivos';
+	}
+	if(getParameterByName('nombremodelo') != ''){
+		document.getElementById('nombremodelo').value = getParameterByName('nombremodelo');
+	}
+	if(getParameterByName('ncedula') != ''){
+		document.getElementById('ncedula').value = getParameterByName('ncedula');
+	}
+	if(getParameterByName('imgfrontal') != ''){
+		document.getElementById('imgfrontal').value = getParameterByName('imgfrontal');
+		document.getElementById('01').style.display = 'none';
+	}
+	if(getParameterByName('imgfrontal2') != ''){
+		document.getElementById('imgfrontal2').value = getParameterByName('imgfrontal2');
+		document.getElementById('02').style.display = 'none';
+	}
+	if(getParameterByName('imgfrontal3') != ''){
+		document.getElementById('imgfrontal3').value = getParameterByName('imgfrontal3');
+		document.getElementById('03').style.display = 'none';
+	}*/
+	if(getParameterByName('nombremodelo') != ''){
+		document.getElementById('nombremodelo').value = getParameterByName('nombremodelo');
+	}
+	if(getParameterByName('ncedula') != ''){
+		document.getElementById('ncedula').value = getParameterByName('ncedula');
+	}
+	if(getParameterByName('iduser') != ''){
+		document.getElementById('iduser').value = getParameterByName('iduser');
+		mostrardivscamara();
+		location.href='#subirarchivos';
+	}else{
+		document.getElementById("nombremodelo").value='';
+		document.getElementById("ncedula").value='';
+		document.getElementById('01').style.display = 'block';
+		document.getElementById('02').style.display = 'block';
+		document.getElementById('03').style.display = 'block';
+		document.getElementById('imagen01').src = 'img/ccfente.png';
+		document.getElementById('imagen02').src = 'img/ccposterior.png';
+		document.getElementById('imagen03').src = 'img/ccwithmodelo.png';
+		window.localStorage.removeItem("imgfrontal");
+		window.localStorage.removeItem("imgfrontal2");
+		window.localStorage.removeItem("imgfrontal3");
+		window.localStorage.removeItem("iduser");
+	}
+	if(window.localStorage.getItem("imgfrontal") != null){
+		document.getElementById('01').style.display = 'none';
+		document.getElementById('01-1').style.display = 'block';
+		document.getElementById('imagen01-1').src = window.localStorage.getItem("imgfrontal");
+		document.getElementById('imagen01-1').style.transform = 'rotate(-90deg)';
+		
+	}
+	if(window.localStorage.getItem("imgfrontal2") != null){
+		document.getElementById('02').style.display = 'none';
+		document.getElementById('02-1').style.display = 'block';
+		document.getElementById('imagen02-1').src = window.localStorage.getItem("imgfrontal2");
+		document.getElementById('imagen02-1').style.transform = 'rotate(-90deg)';
+	}
+	if(window.localStorage.getItem("imgfrontal3") != null){
+		document.getElementById('03').style.display = 'none';
+		document.getElementById('03-1').style.display = 'block';
+		document.getElementById('imagen03-1').src = window.localStorage.getItem("imgfrontal3");
+		document.getElementById('imagen03-1').style.transform = 'rotate(-90deg)';
+	}else{
+		if(getParameterByName('imgfrontal3') != ''){
+			document.getElementById('03').style.display = 'none';
+			document.getElementById('03-1').style.display = 'block';
+			document.getElementById('imagen03-1').src = getParameterByName('imgfrontal3');
+			document.getElementById('imagen03-1').style.transform = 'rotate(-90deg)';
+		}
+	}
+	
+	
+	
+  </script>
+</html>
